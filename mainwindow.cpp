@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->faceDet = new facedetect();
 
     QObject::connect(ui->PhotoDet_action, SIGNAL(triggered()), this, SLOT(PhotoDetec()));
+    QObject::connect(ui->Video_action, SIGNAL(triggered()), this, SLOT(VideoDetec()));
 }
 
 MainWindow::~MainWindow()
@@ -35,4 +36,17 @@ void MainWindow::PhotoDetec()
         faceDet->PhotoDetec(filepath);
         this->faceDet->DrawFace();
     }
+}
+
+void MainWindow::VideoDetec()
+{
+    facedetect *fac = new facedetect();
+
+    if(fac)
+    {
+        fac->VideoDetec(0);
+    }
+
+    delete fac;
+    fac = NULL;
 }

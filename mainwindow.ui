@@ -28,6 +28,7 @@
      <string>检测(&amp;J)</string>
     </property>
     <addaction name="PhotoDet_action"/>
+    <addaction name="Video_action"/>
    </widget>
    <addaction name="menu_Detec"/>
   </widget>
@@ -43,6 +44,11 @@
   <action name="PhotoDet_action">
    <property name="text">
     <string>图像检测(&amp;T)</string>
+   </property>
+  </action>
+  <action name="Video_action">
+   <property name="text">
+    <string>视频检测(&amp;S)</string>
    </property>
   </action>
  </widget>

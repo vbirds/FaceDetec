@@ -101,24 +101,25 @@ void facedetect::VideoDetec(int deviceId)
     if(cap.isOpened())
     {
         Mat frame;
-        while(true)
+
+        if(this->stop == true)
+        {
+            this->stop = false;
+        }
+        while(!(this->stop))
         {
             cap >> frame;
 
-            if(!(this->faceRects).empty())
-            {
-                (this->faceRects).clear();
-            }
-            /*清理缓存*/
             faceRects.clear();
             /*调用核心检测函数*/
             faceRects = this->BaseDetec(frame);
 
-            /*Exit this loop on escape*/
-            char key = (char)waitKey(20);
-            if(key == 27)
+            /*标记人脸*/
+            this->VideoDrawFace(frame, faceRects);
+
+            if(waitKey(20) >=0)
             {
-                break;
+                this->stop = true;
             }
         }
 
@@ -194,7 +195,7 @@ int facedetect::GetScale()
 }
 
 /*********************************
- *   标记人脸函数 给用户提供的接口
+ *   标记人脸函数(照片图像) 给用户提供的接口
  *********************************/
 void facedetect::DrawFace()
 {
@@ -202,7 +203,7 @@ void facedetect::DrawFace()
 }
 
 /*********************************
- *   真标记人脸函数(核心)
+ *   真标记人脸函数(核心)(照片图像)
  *********************************/
 void facedetect::RealDrawFace(Mat image, std::vector<Rect> fRects)
 {
@@ -224,6 +225,23 @@ void facedetect::RealDrawFace(Mat image, std::vector<Rect> fRects)
 
     cv::imshow("Result", image);
     waitKey(0);
+}
+
+/************************************
+ *   标记人脸(摄像头) 给用户提供的接口
+ ************************************/
+ void facedetect::VideoDrawFace(Mat &image, std::vector<Rect> &fRects)
+{
+     for(vector<Rect>::const_iterator r = fRects.begin(); r != fRects.end(); r++)
+     {
+         rectangle(image,
+                   cvPoint(cvRound(r->x * (this->scale)), cvRound(r->y)* (this->scale)),
+                   cvPoint(cvRound((r->x + r->width-1)* (this->scale)), cvRound((r->y + r->height-1)* (this->scale))),
+                   Scalar(0,255,0)
+                   );
+     }
+
+     cv::imshow("VideoDec", image);
 }
 
 /*********************************

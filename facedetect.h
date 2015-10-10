@@ -46,8 +46,11 @@ public:
     /*获取缩放比值*/
     int GetScale();
 
-    /*标记人脸 给用户提供的接口*/
+    /*标记人脸(照片图像) 给用户提供的接口*/
     void DrawFace();
+
+    /*标记人脸(摄像头) 给用户提供的接口*/
+    void VideoDrawFace(Mat &image, std::vector<Rect> &fRects);
 
     /*清理释放内存函数*/
     void Clear();
@@ -58,8 +61,9 @@ private:
     /*核心检测（真正的检测函数）*/
     std::vector<cv::Rect> BaseDetec(Mat srcImage);
 
-    /*真标记人脸*/
+    /*真标记人脸(照片图像)*/
     void RealDrawFace(Mat image, std::vector<cv::Rect> fRects);
+
 
     /*初始化函数*/
     void InitFunc();
@@ -87,6 +91,9 @@ private:
 
     /*缩放比*/
     int scale;
+
+    /*摄像停止标识*/
+    bool stop;
 
 };
 

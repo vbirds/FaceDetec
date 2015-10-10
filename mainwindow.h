@@ -20,6 +20,7 @@ public:
 
 private slots:
     void PhotoDetec();
+    void VideoDetec();
 
 private:
     Ui::MainWindow *ui;
