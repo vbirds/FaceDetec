@@ -2,15 +2,28 @@
 
 facedetect::facedetect()
 {
-    this->face_cascade_file = "./haarcascade_frontalface_alt.xml";
-    this->face_cascade.load((this->face_cascade_file).toStdString());
-    this->faceRects.clear();
-    this->faceCount = 0;
+    /*初始化*/
+    this->InitFunc();
 }
 
 facedetect::~facedetect()
 {
+    /*清理释放内存*/
+    this->Clear();
+}
 
+
+/********************************
+ *   初始化函数
+ *******************************/
+void facedetect::InitFunc()
+{
+    this->face_cascade_file = "./haarcascade_frontalface_alt.xml";
+    this->face_cascade.load((this->face_cascade_file).toStdString());
+    this->faceRects.clear();
+    this->faceCount = 0;
+    /*设置缩放比*/
+    this->scale = 1.2;
 }
 
 /********************************
@@ -27,17 +40,22 @@ std::vector<cv::Rect> facedetect::BaseDetec(Mat srcImage)
     }
 
     Mat frame_gray;
+    /*建立缩小图片,加快检测速度*/
+    Mat smallImg(cvRound(srcImage.rows/(this->scale)), cvRound(srcImage.cols/(this->scale)),CV_8UC1);
 
     /*转成灰度图像*/
     cvtColor(srcImage, frame_gray, CV_BGR2GRAY);
 
+    /*改变图像大小*/
+    cv::resize(frame_gray, smallImg, smallImg.size(), 0, 0, INTER_LINEAR);
+
     /*直方图均值化处理*/
-    equalizeHist(frame_gray, frame_gray);
+    equalizeHist(smallImg, smallImg);
 
     /****************************************
      * 人脸检测 将人脸坐标存入 'faceRects'中
      ***************************************/
-    this->face_cascade.detectMultiScale(frame_gray, faceRects,
+    this->face_cascade.detectMultiScale(smallImg, faceRects,
                                         1.1, 2, 0|CV_HAAR_SCALE_IMAGE,
                                         Size(20, 20)
                                         );
@@ -56,6 +74,7 @@ void facedetect::PhotoDetec(QString ImagePath)
         return;
     }
     Mat image = imread(ImagePath.toStdString());
+    this->imageSrc.release();
     this->imageSrc = image;
 
     if(!image.data)
@@ -65,6 +84,7 @@ void facedetect::PhotoDetec(QString ImagePath)
     }
 
     /*调用核心检测函数*/
+    this->faceRects.clear();
     this->faceRects = this->BaseDetec(image);
     return;
 }
@@ -89,11 +109,10 @@ void facedetect::VideoDetec(int deviceId)
             {
                 (this->faceRects).clear();
             }
-            /*建立缩小图片,加快检测速度*/
-            Mat smallImg(cvRound(frame.rows/2),cvRound(frame.cols/2),CV_8UC1);
-
+            /*清理缓存*/
             faceRects.clear();
-            faceRects = this->BaseDetec(smallImg);
+            /*调用核心检测函数*/
+            faceRects = this->BaseDetec(frame);
 
             /*Exit this loop on escape*/
             char key = (char)waitKey(20);
@@ -103,7 +122,10 @@ void facedetect::VideoDetec(int deviceId)
             }
         }
 
-        this->videoSrc = frame;
+        /*在清理以前的缓存后再赋值*/
+        this->imageSrc.release();
+        this->imageSrc = frame;
+        this->faceRects.clear();
         this->faceRects = faceRects;
 
     }
@@ -146,6 +168,29 @@ void facedetect::SetFace_cascade(QString filename)
 int facedetect::GetFaceCount()
 {
     this->faceCount = (this->faceRects).size();
+    return this->faceCount;
+}
+
+/*******************************
+ *   设置缩放比函数(初始化时默认已经赋值1.2)
+ *******************************/
+void facedetect::SetScale(int value)
+{
+    if(value <= 0)
+    {
+        qDebug()<<" func SetScale(int value) please check if(value > 0)";
+        return;
+    }
+
+    this->scale = value;
+}
+
+/*********************************************
+ *   获取缩放比值函数(初始化时默认已经赋值1.2)
+ *********************************************/
+int facedetect::GetScale()
+{
+    return this->scale;
 }
 
 /*********************************
@@ -171,12 +216,37 @@ void facedetect::RealDrawFace(Mat image, std::vector<Rect> fRects)
     for(vector<Rect>::const_iterator r = fRects.begin(); r != fRects.end(); r++)
     {
         rectangle(image,
-                  cvPoint(cvRound(r->x), cvRound(r->y)),
-                  cvPoint(cvRound((r->x + r->width-1)), cvRound((r->y + r->height-1))),
+                  cvPoint(cvRound(r->x * (this->scale)), cvRound(r->y)* (this->scale)),
+                  cvPoint(cvRound((r->x + r->width-1)* (this->scale)), cvRound((r->y + r->height-1)* (this->scale))),
                   Scalar(0,255,0)
                   );
     }
 
     cv::imshow("Result", image);
     waitKey(0);
+}
+
+/*********************************
+ *   清理释放内存函数
+ *********************************/
+void facedetect::Clear()
+{
+    /*调用核心内存释放函数*/
+    this->RealClear();
+}
+
+/*********************************
+ *   核心清理释放内存函数
+ *********************************/
+void facedetect::RealClear()
+{
+
+    std::vector<cv::Rect>(this->faceRects).swap(this->faceRects);
+    QString(this->face_cascade_file).swap(this->face_cascade_file);
+    QString(this->face_cascade_file).swap(this->face_cascade_file);
+
+    this->imageSrc.release();
+    this->scale = 0;
+    this->faceCount = 0;
+
 }

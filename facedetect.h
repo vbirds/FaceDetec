@@ -40,8 +40,19 @@ public:
     /*获取人脸数*/
     int GetFaceCount();
 
+    /*设置缩放比(初始化时默认已经赋值1.2)*/
+    void SetScale(int value);
+
+    /*获取缩放比值*/
+    int GetScale();
+
     /*标记人脸 给用户提供的接口*/
     void DrawFace();
+
+    /*清理释放内存函数*/
+    void Clear();
+
+
 
 private:
     /*核心检测（真正的检测函数）*/
@@ -49,6 +60,12 @@ private:
 
     /*真标记人脸*/
     void RealDrawFace(Mat image, std::vector<cv::Rect> fRects);
+
+    /*初始化函数*/
+    void InitFunc();
+
+    /*核心清理释放内存函数*/
+    void RealClear();
 
     /*人脸坐标*/
     std::vector<cv::Rect> faceRects;
@@ -67,6 +84,9 @@ private:
 
     /*源图像*/
     Mat imageSrc;
+
+    /*缩放比*/
+    int scale;
 
 };
 
