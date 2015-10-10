@@ -23,7 +23,7 @@ void facedetect::InitFunc()
     this->faceRects.clear();
     this->faceCount = 0;
     /*设置缩放比*/
-    this->scale = 1.2;
+    this->scale = 2;
 }
 
 /********************************
