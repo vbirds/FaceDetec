@@ -34,7 +34,9 @@ void MainWindow::PhotoDetec()
     if(this->faceDet)
     {
         faceDet->PhotoDetec(filepath);
+        qDebug() <<"People nums: "<< this->faceDet->GetFaceCount();
         this->faceDet->DrawFace();
+
     }
 }
 
@@ -45,6 +47,7 @@ void MainWindow::VideoDetec()
     if(fac)
     {
         fac->VideoDetec(0);
+
     }
 
     delete fac;
