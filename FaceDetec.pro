@@ -33,9 +33,11 @@ LIBS+=D:\OpenCV\lib\libopencv_calib3d2410.dll.a\
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    facedetect.cpp
+    facedetect.cpp \
+    facerecognize.cpp
 
 HEADERS  += mainwindow.h \
-    facedetect.h
+    facedetect.h \
+    facerecognize.h
 
 FORMS    += mainwindow.ui
