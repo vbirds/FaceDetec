@@ -3,7 +3,14 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <iostream>
+#include <vector>
+
 #include "facedetect.h"
+#include "facerecognize.h"
+
+using namespace std;
 
 namespace Ui {
 class MainWindow;
@@ -22,9 +29,17 @@ private slots:
     void PhotoDetec();
     void VideoDetec();
 
+    void Train();
+    void PhotoRecognize();
+
 private:
     Ui::MainWindow *ui;
     facedetect   *faceDet;
+    facerecognize *recognize;
+
+
+
+
 };
 
 #endif // MAINWINDOW_H

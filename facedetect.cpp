@@ -90,6 +90,19 @@ void facedetect::PhotoDetec(QString ImagePath)
 }
 
 /*******************************
+ *   图像检测函数
+ *******************************/
+void facedetect::PhotoDetec(Mat image, std::vector<cv::Rect> &rect)
+{
+    if(!image.data)
+    {
+        qDebug() << "func facedetect::PhotoDetec(Mat image) check if(!image.data)";
+        return;
+    }
+    rect = this->BaseDetec(image);
+}
+
+/*******************************
  *   摄像检测函数
  *******************************/
 void facedetect::VideoDetec(int deviceId)
@@ -194,6 +207,22 @@ int facedetect::GetScale()
     return this->scale;
 }
 
+/*********************************************
+ *   获取人脸坐标函数
+ *********************************************/
+std::vector<cv::Rect> facedetect::GetRects()
+{
+    return this->faceRects;
+}
+
+/*********************************************
+ *   获取源图像函数
+ *********************************************/
+cv::Mat facedetect::GetSrcMat()
+{
+    return this->imageSrc;
+}
+
 /*********************************
  *   标记人脸函数(照片图像) 给用户提供的接口
  *********************************/
@@ -212,6 +241,7 @@ void facedetect::RealDrawFace(Mat image, std::vector<Rect> fRects)
         qDebug()<<"func facedetect::RealDrawFace() check if(!image.data || fRects.empty())";
         return;
     }
+
 
     /*标记人脸*/
     for(vector<Rect>::const_iterator r = fRects.begin(); r != fRects.end(); r++)

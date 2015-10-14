@@ -28,6 +28,9 @@ public:
     /*图像检测*/
     void PhotoDetec(QString ImagePath);
 
+    /*图像检测*/
+    void PhotoDetec(Mat image, std::vector<cv::Rect> &rect);
+
     /*摄像检测*/
     void VideoDetec(int deviceId = 0);
 
@@ -45,6 +48,12 @@ public:
 
     /*获取缩放比值*/
     int GetScale();
+
+    /*获取人脸坐标函数*/
+    std::vector<cv::Rect> GetRects();
+
+    /*获取源图像函数*/
+    cv::Mat GetSrcMat();
 
     /*标记人脸(照片图像) 给用户提供的接口*/
     void DrawFace();

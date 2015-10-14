@@ -30,7 +30,15 @@
     <addaction name="PhotoDet_action"/>
     <addaction name="Video_action"/>
    </widget>
+   <widget class="QMenu" name="menu_Recog">
+    <property name="title">
+     <string>识别(&amp;R)</string>
+    </property>
+    <addaction name="Train_action"/>
+    <addaction name="Recog_action"/>
+   </widget>
    <addaction name="menu_Detec"/>
+   <addaction name="menu_Recog"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -49,6 +57,16 @@
   <action name="Video_action">
    <property name="text">
     <string>视频检测(&amp;S)</string>
+   </property>
+  </action>
+  <action name="Train_action">
+   <property name="text">
+    <string>训练(&amp;X)</string>
+   </property>
+  </action>
+  <action name="Recog_action">
+   <property name="text">
+    <string>图片识别(&amp;P)</string>
    </property>
   </action>
  </widget>

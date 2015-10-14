@@ -8,9 +8,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     this->faceDet = new facedetect();
+    this->recognize = new facerecognize();
 
     QObject::connect(ui->PhotoDet_action, SIGNAL(triggered()), this, SLOT(PhotoDetec()));
     QObject::connect(ui->Video_action, SIGNAL(triggered()), this, SLOT(VideoDetec()));
+    QObject::connect(ui->Train_action, SIGNAL(triggered()), this, SLOT(Train()));
+    QObject::connect(ui->Recog_action, SIGNAL(triggered()), this, SLOT(PhotoRecognize()));
 }
 
 MainWindow::~MainWindow()
@@ -29,7 +32,7 @@ void MainWindow::PhotoDetec()
 {
     QString filepath = QFileDialog::getOpenFileName(this,tr("Open File"),
                                                     QDir::currentPath(),
-                                                    tr("Image Files (*.png *.jpg *.bmp)")
+                                                    tr("Image Files (*.png *.jpg *.bmp *.pgm)")
                                                     );
     if(this->faceDet)
     {
@@ -52,4 +55,30 @@ void MainWindow::VideoDetec()
 
     delete fac;
     fac = NULL;
+}
+
+void MainWindow::Train()
+{
+    int ret;
+    ret = this->recognize->Learn();
+
+    if(ret == 0)
+    {
+        QMessageBox::information(NULL,"Informaition", "Train Succcess");
+    }
+    else
+    {
+        QMessageBox::information(NULL,"Informaition", "Train failed");
+    }
+}
+
+void MainWindow::PhotoRecognize()
+{
+    QString photopath = QFileDialog::getOpenFileName(this,tr("Open File"),
+                                                     QDir::currentPath(),
+                                                     tr("Image Files (*.png *.jpg *.bmp *.pgm)")
+                                                     );
+    std::vector<int>  nums;
+
+    this->recognize->PhotoRecognize(photopath, nums);
 }
